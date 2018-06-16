@@ -98,6 +98,8 @@ section.key button#join:hover {background-color: #f53f28;}
 section.button {
   display: inline-block;
   margin: 20px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 section.button button.btn {
