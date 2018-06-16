@@ -5,7 +5,8 @@
 <link rel="stylesheet" href="stylesheet.css">
 <!-- Changed by MarinaF -->
 <script src="AgoraRTCSDK-2.2.0.js"></script>
-<script src="vendor/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
 </head>
 
 <body class="wrap">
@@ -68,6 +69,19 @@
 </section>
 </div>
 
+<!-- remove after testing -->
+<div class="col-md-4">
+  <div id="reward"></div>
+  <div style="height:25em;">
+    <strong>EMOTION TRACKING RESULTS</strong>
+    <div id="results" style="word-wrap:break-word;"></div>
+  </div>
+  <div>
+    <strong>DETECTOR LOG MSGS</strong>
+  </div>
+  <div id="logs"></div>
+</div>
+<!-- remove after testing -->
 <script language="javascript">
 if(!AgoraRTC.checkSystemRequirements()) {
   alert("browser is no support webRTC");
@@ -86,6 +100,35 @@ AgoraRTC.Logger.debug('this is debug');
 var client, localStream, camera, microphone;
 var audioSelect = document.querySelector('select#audioSource');
 var videoSelect = document.querySelector('select#videoSource');
+
+// SDK Needs to create video and canvas nodes in the DOM in order to function
+// Here we are adding those nodes a predefined div.
+var divRoot = $("#agora_local")[0];
+var width = 210;
+var height = 147;
+var faceMode = affdex.FaceDetectorMode.LARGE_FACES;
+//Construct a CameraDetector and specify the image width / height and face detector mode.
+var detector = new affdex.CameraDetector(divRoot, width, height, faceMode);
+var triggered = false;
+
+//Enable detection of all Expressions, Emotions and Emojis classifiers.
+detector.detectAllEmotions();
+detector.detectAllExpressions();
+detector.detectAllEmojis();
+detector.detectAllAppearance();
+
+detector.addEventListener("onInitializeSuccess", function() {
+        log('#logs', "The detector reports initialized");
+        //Display canvas instead of video feed because we want to draw the feature points on it
+        $("#face_video_canvas").css("display", "none");
+        $("#face_video").css("display", "none");
+      });
+
+function log(node_name, msg) {
+  //console.log('yep');
+        $(node_name).append("<span>" + msg + "</span><br />");
+}
+
 function join() {
   document.getElementById("join").disabled = true;
   document.getElementById("video").disabled = true;
@@ -124,6 +167,14 @@ function join() {
         }, function (err) {
           console.log("getUserMedia failed", err);
         });
+
+        if (detector && !detector.isRunning) {
+          $("#logs").html("");
+          detector.start();
+          $("#face_video_canvas").css("display", "none");
+          $("#face_video").css("display", "none");
+        }
+        console.log("Face detection started");
       }
     }, function(err) {
       console.log("Join channel failed", err);
@@ -180,6 +231,11 @@ function leave() {
   }, function (err) {
     console.log("Leave channel failed");
   });
+  console.log("Face detection stopped");
+  if (detector && detector.isRunning) {
+    detector.removeEventListener();
+    detector.stop();
+  }
 }
 function publish() {
   document.getElementById("publish").disabled = true;
@@ -213,13 +269,97 @@ function enableVideo()
   document.getElementById("disableVideo").disabled = false;
   document.getElementById("enableVideo").disabled = true;
   localStream.enableVideo();
+  if (detector && !detector.isRunning) {
+          $("#logs").html("");
+          detector.start();
+          $("#face_video_canvas").css("display", "none");
+          $("#face_video").css("display", "none");
+        }
+  console.log("Face detection started");
+
 }
 function disableVideo()
 {
   document.getElementById("disableVideo").disabled = true;
   document.getElementById("enableVideo").disabled = false;
   localStream.disableVideo();
+
+  console.log("Face detection stopped");
+  if (detector && detector.isRunning) {
+    detector.removeEventListener();
+    detector.stop();
+  }
 }
+
+//Affectiva code
+
+ //Add a callback to notify when camera access is allowed
+ detector.addEventListener("onWebcamConnectSuccess", function() {
+        log('#logs', "Webcam access allowed");
+      });
+
+      //Add a callback to notify when camera access is denied
+      detector.addEventListener("onWebcamConnectFailure", function() {
+        log('#logs', "webcam denied");
+        console.log("Webcam access denied");
+      });
+
+      //Add a callback to notify when detector is stopped
+      detector.addEventListener("onStopSuccess", function() {
+        log('#logs', "The detector reports stopped");
+        $("#results").html("");
+      });
+
+      //Add a callback to receive the results from processing an image.
+      //The faces object contains the list of the faces detected in an image.
+      //Faces object contains probabilities for all the different expressions, emotions and appearance metrics
+      detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp) {
+        $('#results').html("");
+
+        // log('#results', "Timestamp: " + timestamp.toFixed(2));
+        // log('#results', "Number of faces found: " + faces.length);
+        if (faces.length > 0) {
+          log('#results', triggered);
+          // log('#results', "Appearance: " + JSON.stringify(faces[0].appearance));
+          // log('#results', "Emotions: " + JSON.stringify(faces[0].emotions, function(key, val) {
+          //   return val.toFixed ? Number(val.toFixed(0)) : val;
+          // }));
+          // log('#results', "Expressions: " + JSON.stringify(faces[0].expressions, function(key, val) {
+          //   return val.toFixed ? Number(val.toFixed(0)) : val;
+          // }));
+          // log('#results', "Emoji: " + faces[0].emojis.dominantEmoji);
+          // log('#results', "Emotions values: " + faces[0].emotions.joy + " " + faces[0].emotions.engagement);
+          // log('#results', typeof faces[0].emotions.joy);
+          if (!triggered && faces[0].emotions.joy > 98 && faces[0].emotions.engagement > 98) {
+            log('#results', "drop Skittles");
+            triggered = true;
+            $('#reward').html('<img src="images/skittles50.png">');
+          }
+          
+          drawFeaturePoints(image, faces[0].featurePoints);
+        }
+      });
+
+      //Draw the detected facial feature points on the image
+      function drawFeaturePoints(img, featurePoints) {
+        var contxt = $('#face_video_canvas')[0].getContext('2d');
+
+        var hRatio = contxt.canvas.width / img.width;
+        var vRatio = contxt.canvas.height / img.height;
+        var ratio = Math.min(hRatio, vRatio);
+
+        contxt.strokeStyle = "#FFFFFF";
+        for (var id in featurePoints) {
+          contxt.beginPath();
+          contxt.arc(featurePoints[id].x,
+            featurePoints[id].y, 2, 0, 2 * Math.PI);
+          contxt.stroke();
+
+        }
+      }
+
+//Affectiva code
+
 function getDevices() {
   AgoraRTC.getDevices(function (devices) {
     for (var i = 0; i !== devices.length; ++i) {
