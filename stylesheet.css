@@ -1,0 +1,85 @@
+
+/*-------------------------------------
+| Body
+-------------------------------------*/
+body {
+  width: 800px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #fcb809;
+}
+
+h1 {
+  text-align: center;
+  font-size: 50px;
+  color: #7c002f;
+}
+
+/*-------------------------------------
+| Audio/Video source
+-------------------------------------*/
+div.select {
+  margin-bottom: 20px;
+  margin-left: 20px;
+  display: inline;
+}
+
+/*-------------------------------------
+| Key/Channel
+-------------------------------------*/
+section.key {
+  margin: 20px;
+}
+
+h2 {
+  font-size: 25px;
+  display: inline;
+}
+
+section.seperate {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+h3 {
+  display: inline;
+}
+
+section.key button#join {
+  background-color: #7c002f;
+  width: 70px;
+  height: 40px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 500px;
+  font-size: 18px;
+}
+
+section.key button#join:hover {background-color: #f53f28;}
+
+/*-------------------------------------
+| Buttons
+-------------------------------------*/
+section.button {
+  display: inline-block;
+  margin: 20px;
+}
+
+section.button button.btn {
+  width: 90px;
+  height: 40px;
+  background-color: #440e35;
+  color: white;
+  border-radius: 10px;
+  font-weight: 500px;
+  font-size: 10px;
+}
+
+section.button button.btn:hover {background-color: #f53f28;}
+
+section.button button.main {
+background-color: #7c002f;
+font-weight: 500px;
+font-size: 12px;
+}
