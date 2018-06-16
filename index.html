@@ -9,11 +9,16 @@
 </head>
 
 <body class="wrap">
-  <h1>HappyVidChat</h1>
+  <section class="header">
+      <img class="logo flex" src="./images/logo.png">
+      <h1 class="flex">HappyVidChat</h1>
+      <h4>Video Chat + Coupons</h4>
+  </section>
+
 <div id="div_device" class="panel panel-default">
 <div class="select">
 <label for="audioSource">Audio source: </label><select id="audioSource"></select>
-</div>
+</div> <br>
 <div class="select">
 <label for="videoSource">Video source: </label><select id="videoSource"></select>
 </div>
@@ -30,16 +35,6 @@
           </section>
   </section>
 
-<section class="button">
-      <button id="leave" class="btn btn-primary main" onclick="leave()">Leave</button>
-      <button id="publish" class="btn btn-primary main" onclick="publish()">Publish</button>
-      <button id="unpublish" class="btn btn-primary" onclick="unpublish()">Unpublish</button>
-      <button id="muteAudio" class="btn btn-primary main" onclick="muteAudio()">Mute</button>
-      <button id="unmuteAudio" class="btn btn-primary" onclick="unmuteAudio()">Unmute</button>
-      <button id="enableVideo" class="btn btn-primary main" onclick="enableVideo()">EnableVideo</button>
-      <button id="disableVideo" class="btn btn-primary" onclick="disableVideo()">DisableVideo</button>
-</section>
-</div>
 
 </div>
 
@@ -60,6 +55,17 @@
 
 <div id="video" style="margin:0 auto;">
     <div id="agora_local" style="float:center;width:210px;height:147px;display:inline-block;"></div>
+</div>
+
+<section class="button">
+      <button id="leave" class="btn btn-primary main" onclick="leave()">Leave</button>
+      <button id="publish" class="btn btn-primary main" onclick="publish()">Publish</button>
+      <button id="unpublish" class="btn btn-primary" onclick="unpublish()">Unpublish</button>
+      <button id="muteAudio" class="btn btn-primary main" onclick="muteAudio()">Mute</button>
+      <button id="unmuteAudio" class="btn btn-primary" onclick="unmuteAudio()">Unmute</button>
+      <button id="enableVideo" class="btn btn-primary main" onclick="enableVideo()">EnableVideo</button>
+      <button id="disableVideo" class="btn btn-primary" onclick="disableVideo()">DisableVideo</button>
+</section>
 </div>
 
 <script language="javascript">
