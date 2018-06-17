@@ -309,7 +309,7 @@ function disableVideo()
       //Add a callback to notify when detector is stopped
       detector.addEventListener("onStopSuccess", function() {
         log('#logs', "The detector reports stopped");
-        $("#results").html("");
+        $("#agora_local").html("");
       });
 
       //Add a callback to receive the results from processing an image.
@@ -335,7 +335,7 @@ function disableVideo()
           if (!triggered && faces[0].emotions.joy > 98 && faces[0].emotions.engagement > 98) {
             log('#results', "drop Skittles");
             triggered = true;
-            $('#reward').html('<img #skittle src="images/skittles50.png">');
+            $('#agora_local').append('<img #skittle src="images/skittles50.png">');
           }
           
           //drawFeaturePoints(image, faces[0].featurePoints);
