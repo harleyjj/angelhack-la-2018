@@ -56,7 +56,7 @@
 
 <div id="video" style="margin:0 auto;">
     <section class="inline">
-    <div id="agora_local" style="float:center;width:210px;height:147px;display:flex;flex-direction:row;"></div>
+    <div id="agora_local" style="float:center;width:210px;height:147px;display:inline-block;"></div>
     <div id="reward"></div>
   </section>
 </div>
@@ -335,7 +335,7 @@ function disableVideo()
           if (!triggered && faces[0].emotions.joy > 98 && faces[0].emotions.engagement > 98) {
             log('#results', "drop Skittles");
             triggered = true;
-            $('#agora_local').append('<img #skittle style="margin-left:300px;" src="images/skittles50.png">');
+            $('#agora_local').append('<img #skittle src="images/skittles50.png">');
           }
           
           //drawFeaturePoints(image, faces[0].featurePoints);
