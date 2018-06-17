@@ -119,3 +119,11 @@ background-color: #7c002f;
 font-weight: 500px;
 font-size: 12px;
 }
+
+section.inline {
+  display: inline;
+}
+
+#video {
+  display: inline;
+}
